@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Webpack Chrome Extension",
+  "version": "0.9.0",
+  "description": "this is smaple chrome extention has react and build by the webpack",
+  "action": {
+    "default_title": "webpack extention",
+    "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "./icons/icon16.png",
+    "32": "./icons/icon32.png",
+    "48": "./icons/icon48.png",
+    "128": "./icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "sessions",
+    "storage",
+    "tabs",
+    "topSites",
+    "webNavigation"
+  ],
+  "host_permissions": ["*://*/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
