@@ -1,0 +1,72 @@
+:root {
+  --primary-color: #5468ff;
+  --background-light: #ffffff;
+  --text-light: #000000;
+  --background-dark: #1c1e21;
+  --text-dark: #ffffff;
+}
+
+[data-theme="light"] {
+  --background: var(--background-light);
+  --text: var(--text-light);
+}
+
+[data-theme="dark"] {
+  --background: var(--background-dark);
+  --text: var(--text-dark);
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nav-button.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.home,
+.settings {
+  text-align: center;
+}
+
+.theme-toggle button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  border: none;
+  background-color: var(--primary-color);
+  color: #fff;
+  border-radius: 5px;
+}
