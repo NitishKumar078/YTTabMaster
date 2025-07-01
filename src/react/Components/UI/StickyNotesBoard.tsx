@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import StickyNote from "./StickyNote";
 
 export default function StickyNotesBoard() {
@@ -11,8 +11,32 @@ export default function StickyNotesBoard() {
 
   return (
     <div>
-      <button onClick={addNote}>+ Add Note</button>
-      <div className="notes-board">
+      <button
+        onClick={addNote}
+        style={{
+          background: "linear-gradient(90deg, #2563eb 0%, #1e40af 100%)",
+          color: "#fff",
+          border: "none",
+          borderRadius: "8px",
+          padding: "10px 24px",
+          fontSize: "1rem",
+          fontWeight: "bold",
+          cursor: "pointer",
+          boxShadow: "0 2px 8px rgba(37,99,235,0.15)",
+          marginBottom: "16px",
+          letterSpacing: "0.5px",
+        }}
+      >
+        + <span style={{ color: "#93c5fd" }}>Add Note</span>
+      </button>
+      <div
+        className="notes-board"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
         {notes.map((note) => (
           <StickyNote
             key={note.id}

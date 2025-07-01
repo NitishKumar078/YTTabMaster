@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import "./StickyNote.css";
 import { Bold } from "lucide-react";
 
@@ -12,15 +13,24 @@ export default function StickyNote({
   onChange,
   onDelete,
 }: StickyNoteProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   return (
     <div
       className="sticky-note"
-      style={{ position: "relative", display: "flex", flexDirection: "row" }}
+      style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "row",
+        height: "auto",
+      }}
     >
       <textarea
+        ref={textareaRef}
         value={note.text}
         onChange={(e) => onChange({ ...note, text: e.target.value })}
         placeholder="Take a note..."
+        name="note"
       />
       <button className="delete-btn" onClick={() => onDelete(note.id)}>
         ×
@@ -35,7 +45,7 @@ export default function StickyNote({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          pointerEvents: "none", // so it doesn't block textarea
+          pointerEvents: "none",
         }}
       >
         <div
@@ -59,8 +69,6 @@ export default function StickyNote({
           className="sticky-note-action-icons"
         >
           <Bold style={{ color: "black", width: "20px", height: "20px" }} />
-
-          {/* Add more buttons/icons here for other functions */}
         </div>
       </div>
     </div>
