@@ -1,11 +1,9 @@
-import { Home, Bell, Settings, User, Youtube } from "lucide-react";
+import { Home, Settings, User, Youtube } from "lucide-react";
 import React from "react";
 
 interface NavbarProps {
-  activeTab: "home" | "notifications" | "settings" | "profile";
-  setActiveTab: (
-    tab: "home" | "notifications" | "settings" | "profile"
-  ) => void;
+  activeTab: "home" | "Youtube" | "settings" | "profile";
+  setActiveTab: (tab: "home" | "Youtube" | "settings" | "profile") => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
@@ -20,14 +18,12 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
         <span className="nav-modern-label">Home</span>
       </button>
       <button
-        className={`nav-modern-item${
-          activeTab === "notifications" ? " active" : ""
-        }`}
-        onClick={() => setActiveTab("notifications")}
-        title="Notifications"
+        className={`nav-modern-item${activeTab === "Youtube" ? " active" : ""}`}
+        onClick={() => setActiveTab("Youtube")}
+        title="Youtube"
       >
         <Youtube className="nav-modern-icon" />
-        <span className="nav-modern-label">Notifications</span>
+        <span className="nav-modern-label">Youtube</span>
       </button>
       <button
         className={`nav-modern-item${

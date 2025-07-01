@@ -8,7 +8,9 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<"light" | "dark">(
     window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
   );
-  const [activeTab, setActiveTab] = useState<"home" | "settings">("home");
+  const [activeTab, setActiveTab] = useState<
+    "home" | "Youtube" | "settings" | "profile"
+  >("home");
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
