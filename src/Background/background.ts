@@ -32,7 +32,7 @@ function generateYouTubeEmbedLink(
   const videoId = videoIdMatch[1];
 
   // Construct the embed URL with autoplay and start time
-  return `https://www.youtube.com/embed/${videoId}?start=${startTimeInSeconds}&autoplay=1`;
+  return `https://www.yout-ube.com/embed/${videoId}?start=${startTimeInSeconds}&autoplay=1`;
 }
 
 // Example Usage

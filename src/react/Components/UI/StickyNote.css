@@ -1,0 +1,64 @@
+.sticky-note {
+  background: #fff9c4;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  padding: 1rem;
+  margin: 1rem;
+  /* width: 220px; */
+  min-width: 120px;
+  min-height: 120px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: padding 0.2s;
+  height: auto;
+}
+
+.sticky-note textarea {
+  border: none;
+  background: transparent;
+  resize: vertical;
+  width: 22%;
+  min-width: 120px;
+  min-height: 80px;
+  font-size: 1rem;
+  outline: none;
+  padding: 0 0.5rem 0 1.5rem;
+  box-sizing: border-box;
+  transition: padding 0.2s;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  height: auto;
+}
+
+.sticky-note:has(textarea:focus) {
+  padding: 0.5rem;
+}
+
+.sticky-note textarea:focus {
+  padding: 0.75rem 0.75rem 0.75rem 0.75rem;
+}
+
+.sticky-note textarea {
+  /* Adjust padding based on height using clamp for modern browsers */
+  padding-top: clamp(0.5rem, 2vw, 1.5rem);
+  padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.sticky-note:hover {
+  opacity: 1;
+}

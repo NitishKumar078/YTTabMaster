@@ -30,27 +30,6 @@ body {
   flex-direction: column;
 }
 
-.navbar {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-  background-color: var(--primary-color);
-  color: #fff;
-}
-
-.nav-button {
-  background: none;
-  border: none;
-  color: inherit;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.nav-button.active {
-  font-weight: bold;
-  text-decoration: underline;
-}
-
 .content {
   flex-grow: 1;
   padding: 20px;
@@ -69,4 +48,87 @@ body {
   background-color: var(--primary-color);
   color: #fff;
   border-radius: 5px;
+}
+
+.navbar-modern {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, #181c24 0%, #232a36 100%);
+  border-radius: 1.5rem;
+  padding: 0.75rem 2.5rem;
+  margin: 2rem auto;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25);
+  max-width: 600px;
+  transition: all 0.3s ease;
+}
+
+.nav-modern-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #bfc9db;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1.2rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-modern-item .nav-modern-icon {
+  width: 1.3em;
+  height: 1.3em;
+  display: block;
+}
+
+.nav-modern-item.active,
+.nav-modern-item:hover {
+  background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+  color: #fff;
+}
+
+.nav-modern-item.active .nav-modern-icon,
+.nav-modern-item:hover .nav-modern-icon {
+  color: #4f8cff;
+}
+
+.nav-modern-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  .navbar-modern {
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem;
+    width: 98vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+  .nav-modern-item {
+    padding: 0.5rem 0.5rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 410px) {
+  .nav-modern-label {
+    display: none;
+  }
+  .navbar-modern {
+    gap: 1rem;
+    padding: 0.3rem 0.1rem;
+  }
+  .nav-modern-item {
+    min-width: 0;
+    padding: 0.5rem 0.2rem;
+  }
+  .nav-modern-item .nav-modern-icon {
+    width: 2.3em;
+  }
 }

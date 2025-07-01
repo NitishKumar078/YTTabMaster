@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./Components/Navbar";
-import Home from "./Components/Home";
-import Settings from "./Components/Settings";
+import Sidebar from "./Layout/NavBar";
+import Home from "./Pages/Home";
+import Settings from "./Pages/Settings";
 import "./index.css";
 
 const App: React.FC = () => {
@@ -20,8 +20,8 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="content">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <div className="color-red-500">
         {activeTab === "home" ? (
           <Home />
         ) : (
