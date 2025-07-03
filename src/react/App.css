@@ -132,3 +132,15 @@ body {
     width: 2.3em;
   }
 }
+[data-theme="light"] .active,
+.nav-modern-item:hover {
+  background: linear-gradient(90deg, #e0e7ff 0%, #c7d2fe 100%);
+  color: #222b45;
+}
+
+[data-theme="light"] .navbar-modern,
+.nav-modern-item:hover {
+  background: linear-gradient(90deg, #f8fafc 0%, #e0e7ff 100%);
+  box-shadow: 0 4px 24px 0 rgba(84, 104, 255, 0.12);
+  color: #222b45;
+}

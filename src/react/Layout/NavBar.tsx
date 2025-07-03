@@ -1,9 +1,11 @@
-import { Home, Settings, User, Youtube } from "lucide-react";
+import { Home, NotebookPen, Settings, Youtube } from "lucide-react";
 import React from "react";
 
 interface NavbarProps {
-  activeTab: "home" | "Youtube" | "settings" | "profile";
-  setActiveTab: (tab: "home" | "Youtube" | "settings" | "profile") => void;
+  activeTab: "home" | "Youtube" | "settings" | "profile" | "notes";
+  setActiveTab: (
+    tab: "home" | "Youtube" | "settings" | "profile" | "notes"
+  ) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
@@ -26,6 +28,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
         <span className="nav-modern-label">Youtube</span>
       </button>
       <button
+        className={`nav-modern-item${activeTab === "notes" ? " active" : ""}`}
+        onClick={() => setActiveTab("notes")}
+        title="notes"
+      >
+        <NotebookPen className="nav-modern-icon" />
+        <span className="nav-modern-label">Notes</span>
+      </button>
+      <button
         className={`nav-modern-item${
           activeTab === "settings" ? " active" : ""
         }`}
@@ -35,14 +45,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
         <Settings className="nav-modern-icon" />
         <span className="nav-modern-label">Settings</span>
       </button>
-      <button
+      {/* <button
         className={`nav-modern-item${activeTab === "profile" ? " active" : ""}`}
         onClick={() => setActiveTab("profile")}
         title="Profile"
       >
         <User className="nav-modern-icon" />
         <span className="nav-modern-label">Profile</span>
-      </button>
+      </button> */}
     </nav>
   );
 };
