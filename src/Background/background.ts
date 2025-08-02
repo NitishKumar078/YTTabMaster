@@ -39,4 +39,4 @@ function generateYouTubeEmbedLink(
 const youtubeUrl: string = "https://youtu.be/t8HrZTLRCeU";
 const startTimeInSeconds: number = 985; // Start time in seconds
 const embedLink = generateYouTubeEmbedLink(youtubeUrl, startTimeInSeconds);
-console.log(embedLink);
+// console.log(embedLink);

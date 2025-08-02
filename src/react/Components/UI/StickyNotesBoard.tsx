@@ -23,7 +23,7 @@ export default function StickyNotesBoard() {
           fontWeight: "bold",
           cursor: "pointer",
           boxShadow: "0 2px 8px rgba(37,99,235,0.15)",
-          marginBottom: "16px",
+          marginLeft: "20px",
           letterSpacing: "0.5px",
         }}
       >

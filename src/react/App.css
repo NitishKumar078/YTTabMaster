@@ -144,3 +144,114 @@ body {
   box-shadow: 0 4px 24px 0 rgba(84, 104, 255, 0.12);
   color: #222b45;
 }
+
+/* Layout styling */
+.settings-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f7fa;
+  transition: background-color 0.3s, color 0.3s;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.settings-page.dark {
+  background-color: #1e1e2f;
+  color: #f1f1f1;
+}
+
+.settings-card {
+  background-color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 500px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.toggle-status {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.settings-page.dark .settings-card {
+  background-color: #2d2d40;
+  color: white;
+}
+
+/* Title */
+.settings-title {
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+/* Theme toggle */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggle-label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Switch styling */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 26px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4a90e2;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+.theme-mode {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
