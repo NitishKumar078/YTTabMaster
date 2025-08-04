@@ -8,9 +8,9 @@ console.log("hello world... from the content script");
 
 chrome.runtime.sendMessage({ action: "hightlightoption" }, function (response) {
   // console.log("Popup responded:", response);
-
+  const currenturl = window.location.href;
   hightlightoption = response?.reply || true;
-  if (hightlightoption) {
+  if (hightlightoption && !currenturl.includes("chrome-extension://")) {
     addDock();
   }
 });
