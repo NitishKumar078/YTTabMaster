@@ -5,60 +5,153 @@
 
 var hightlightoption;
 console.log("hello world... from the content script");
+var isHighlightMode = false;
+// content.ts
 
-chrome.runtime.sendMessage({ action: "hightlightoption" }, function (response) {
-  // console.log("Popup responded:", response);
-  const currenturl = window.location.href;
-  hightlightoption = response?.reply || true;
-  if (hightlightoption && !currenturl.includes("chrome-extension://")) {
-    addDock();
+chrome.runtime.sendMessage({ action: "hightlightoption" }, (response) => {
+  const currentUrl = window.location.href;
+  const highlightOption = response?.reply ?? true;
+
+  if (highlightOption && !currentUrl.includes("chrome-extension://")) {
+    initFloatingWidget();
   }
 });
 
-function addDock() {
-  // Optional: Load Lucide icon script dynamically (remove if not needed)
-  const script = document.createElement("script");
-  document.body.appendChild(script);
+function initFloatingWidget(): void {
+  if (document.getElementById("floating-widget")) return;
 
-  // Prevent duplicate dock creation
-  if (document.getElementById("floating-dock")) return;
+  const widget = document.createElement("div");
+  widget.id = "floating-widget";
 
-  // Create the dock container
-  const dock = document.createElement("div");
-  dock.id = "floating-dock";
-
-  // Style the dock
-  Object.assign(dock.style, {
+  Object.assign(widget.style, {
     position: "fixed",
     top: "10px",
     right: "10px",
-    zIndex: 999999999,
-    width: "48px",
-    height: "48px",
-    background: "#1E90FF",
+    zIndex: "999999999",
+    background: "#ffffff",
+    border: "1px solid #ccc",
     borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+    padding: "8px",
     display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    cursor: "move",
+    width: "60px",
     alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
   });
 
-  // Create and append the image
-  const image = document.createElement("img");
-  image.src =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWhpZ2hsaWdodGVyLWljb24gbHVjaWRlLWhpZ2hsaWdodGVyIj48cGF0aCBkPSJtOSAxMS02IDZ2M2g5bDMtMyIvPjxwYXRoIGQ9Im0yMiAxMi00LjYgNC42YTIgMiAwIDAgMS0yLjggMGwtNS4yLTUuMmEyIDIgMCAwIDEgMC0yLjhMMTQgNCIvPjwvc3ZnPg==";
-  image.style.width = "24px";
-  image.style.height = "24px";
+  // Action buttons
+  const actions: { icon: string; title: string; onClick: () => void }[] = [
+    {
+      icon: "↗",
+      title: "Open",
+      onClick: () => alert("Open action"),
+    },
+    {
+      icon: "✏️",
+      title: "Edit",
+      onClick: () => alert("Edit action"),
+    },
+    {
+      icon: "🖌️",
+      title: "Toggle Highlight Mode",
+      onClick: () => {
+        isHighlightMode = !isHighlightMode;
+        alert(`Highlight mode: ${isHighlightMode ? "ON" : "OFF"}`);
+      },
+    },
+    {
+      icon: "🗑️",
+      title: "Remove All",
+      onClick: async () => {
+        document.querySelectorAll(".chrome-ext-highlight").forEach((el) => {
+          const span = el as HTMLSpanElement;
+          const parent = span.parentNode!;
+          parent.replaceChild(document.createTextNode(span.innerText), span);
+        });
 
-  dock.appendChild(image);
+        const stored = await chrome.storage.local.get("highlights");
+        delete stored.highlights?.[location.href];
+        await chrome.storage.local.set(stored);
+      },
+    },
+    {
+      icon: "❌",
+      title: "Close",
+      onClick: () => {
+        widget.remove();
+      },
+    },
+  ];
 
-  // Click behavior
-  dock.addEventListener("click", () => {
-    alert("Floating dock clicked!");
+  actions.forEach(({ icon, title, onClick }) => {
+    const btn = document.createElement("button");
+    btn.innerText = icon;
+    btn.title = title;
+    Object.assign(btn.style, {
+      width: "36px",
+      height: "36px",
+      fontSize: "18px",
+      borderRadius: "50%",
+      border: "none",
+      background: "#f0f0f0",
+      cursor: "pointer",
+    });
+
+    btn.addEventListener("click", onClick);
+    widget.appendChild(btn);
   });
 
-  document.body.appendChild(dock);
+  makeDraggable(widget);
+  document.body.appendChild(widget);
+}
+
+// Make the widget draggable and stick to corners
+function makeDraggable(element: HTMLElement): void {
+  let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  element.addEventListener("mousedown", (e: MouseEvent) => {
+    isDragging = true;
+    offsetX = e.clientX - element.getBoundingClientRect().left;
+    offsetY = e.clientY - element.getBoundingClientRect().top;
+    document.body.style.userSelect = "none";
+  });
+
+  document.addEventListener("mousemove", (e: MouseEvent) => {
+    if (!isDragging) return;
+
+    const left = e.clientX - offsetX;
+    const top = e.clientY - offsetY;
+
+    element.style.left = `${left}px`;
+    element.style.top = `${top}px`;
+    element.style.right = "";
+    element.style.bottom = "";
+    element.style.position = "fixed";
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    document.body.style.userSelect = "";
+    snapToNearestCorner(element);
+  });
+}
+
+// Snap to nearest screen corner
+function snapToNearestCorner(element: HTMLElement): void {
+  const screenWidth = window.innerWidth;
+  const rect = element.getBoundingClientRect();
+
+  const isLeft = rect.left < screenWidth / 2;
+  const currentTop = rect.top;
+
+  element.style.left = isLeft ? "10px" : "";
+  element.style.right = !isLeft ? "10px" : "";
+  element.style.top = `${currentTop}px`;
+  element.style.bottom = "";
 }
 
 function replaceplayer() {
@@ -109,8 +202,9 @@ window.onload = function () {
   console.log("Page is fully loaded!");
   // Your animation or logic here
   replaceplayer();
-
-  document.addEventListener("click", performeclickaction);
+  if (window.location.href.includes("youtube")) {
+    document.addEventListener("click", performeclickaction);
+  }
 };
 function performeclickaction() {
   const iframe: HTMLElement | null = document.getElementById("YTTabMaster");
@@ -131,3 +225,111 @@ function performeclickaction() {
     document.removeEventListener("click", performeclickaction);
   }
 }
+
+async function highlightSelectedText(): Promise<void> {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) return;
+
+  const range = selection.getRangeAt(0);
+  if (range.collapsed) return;
+
+  const span = document.createElement("span");
+  span.style.backgroundColor = "yellow";
+  span.style.borderRadius = "2px";
+  span.style.padding = "2px";
+  span.style.display = "inline";
+  span.className = "chrome-ext-highlight";
+  span.setAttribute("data-id", Date.now().toString());
+
+  try {
+    range.surroundContents(span);
+    selection.removeAllRanges();
+
+    const pageUrl = location.href;
+    const highlightedText = span.innerText;
+    const xpath = getXPathForElement(span);
+
+    const stored = (await chrome.storage.local.get("highlights")) || {};
+    const pageHighlights = stored.highlights?.[pageUrl] || [];
+
+    const newHighlight = {
+      id: span.getAttribute("data-id"),
+      text: highlightedText,
+      xpath,
+    };
+    const updated = {
+      ...stored,
+      highlights: {
+        ...stored.highlights,
+        [pageUrl]: [...pageHighlights, newHighlight],
+      },
+    };
+
+    await chrome.storage.local.set(updated);
+  } catch (err) {
+    alert("Highlight failed (multi-element selection not supported).");
+  }
+}
+
+function getXPathForElement(el: Node): string {
+  const parts = [];
+  while (el && el.nodeType === Node.ELEMENT_NODE) {
+    const index =
+      Array.from(el.parentNode?.childNodes || [])
+        .filter((node) => node.nodeName === el.nodeName)
+        .indexOf(el) + 1;
+    const tag = (el as HTMLElement).tagName;
+    parts.unshift(`${tag}:nth-of-type(${index})`);
+    el = el.parentNode!;
+  }
+  return parts.join(" > ");
+}
+
+async function restoreHighlights(): Promise<void> {
+  const stored = await chrome.storage.local.get("highlights");
+  const highlights = stored.highlights?.[location.href] || [];
+
+  highlights.forEach((item: any) => {
+    try {
+      const node = document.evaluate(
+        item.xpath,
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      ).singleNodeValue;
+
+      if (node) {
+        const span = document.createElement("span");
+        span.textContent = item.text;
+        span.style.backgroundColor = "yellow";
+        span.style.borderRadius = "2px";
+        span.style.padding = "2px";
+        span.style.display = "inline";
+        span.className = "chrome-ext-highlight";
+        span.setAttribute("data-id", item.id);
+
+        node.parentNode?.replaceChild(span, node);
+      }
+    } catch (e) {
+      console.error("Failed to restore highlight:", e);
+    }
+  });
+}
+
+document.addEventListener("mouseup", () => {
+  if (isHighlightMode) {
+    highlightSelectedText();
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement;
+  if (target.classList.contains("chrome-ext-highlight")) {
+    const newText = prompt("Edit highlighted text:", target.innerText);
+    if (newText !== null) {
+      target.innerText = newText;
+      // Optionally: update chrome.storage with new text
+    }
+  }
+});
