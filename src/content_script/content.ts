@@ -1,22 +1,26 @@
 /**
- * This is content script of the chrome extention
- *
+ * Content Script for Chrome Extension
+ * Handles floating widget UI, text highlighting, editing, and persistent storage via chrome.storage
  */
 
-var hightlightoption;
-console.log("hello world... from the content script");
-var isHighlightMode = false;
-// content.ts
+let isHighlightMode = false;
 
+console.log("Hello from content script...");
+
+// Request highlight option from background or popup script
 chrome.runtime.sendMessage({ action: "hightlightoption" }, (response) => {
   const currentUrl = window.location.href;
   const highlightOption = response?.reply ?? true;
 
   if (highlightOption && !currentUrl.includes("chrome-extension://")) {
     initFloatingWidget();
+    restoreHighlights();
   }
 });
 
+/**
+ * Initializes a draggable floating widget with action buttons
+ */
 function initFloatingWidget(): void {
   if (document.getElementById("floating-widget")) return;
 
@@ -41,7 +45,6 @@ function initFloatingWidget(): void {
     alignItems: "center",
   });
 
-  // Action buttons
   const actions: { icon: string; title: string; onClick: () => void }[] = [
     {
       icon: "↗",
@@ -79,9 +82,7 @@ function initFloatingWidget(): void {
     {
       icon: "❌",
       title: "Close",
-      onClick: () => {
-        widget.remove();
-      },
+      onClick: () => widget.remove(),
     },
   ];
 
@@ -98,7 +99,6 @@ function initFloatingWidget(): void {
       background: "#f0f0f0",
       cursor: "pointer",
     });
-
     btn.addEventListener("click", onClick);
     widget.appendChild(btn);
   });
@@ -107,7 +107,9 @@ function initFloatingWidget(): void {
   document.body.appendChild(widget);
 }
 
-// Make the widget draggable and stick to corners
+/**
+ * Makes a DOM element draggable and snap to the nearest screen corner
+ */
 function makeDraggable(element: HTMLElement): void {
   let isDragging = false;
   let offsetX = 0;
@@ -140,11 +142,9 @@ function makeDraggable(element: HTMLElement): void {
   });
 }
 
-// Snap to nearest screen corner
 function snapToNearestCorner(element: HTMLElement): void {
   const screenWidth = window.innerWidth;
   const rect = element.getBoundingClientRect();
-
   const isLeft = rect.left < screenWidth / 2;
   const currentTop = rect.top;
 
@@ -154,78 +154,9 @@ function snapToNearestCorner(element: HTMLElement): void {
   element.style.bottom = "";
 }
 
-function replaceplayer() {
-  console.log("funtion started");
-  let videoElement: HTMLElement | null;
-
-  // 1st delete the existing one
-  videoElement = document.getElementById("player-container-inner");
-  if (videoElement) {
-    const { width, height } = videoElement.getBoundingClientRect();
-    videoElement.innerHTML = "";
-    videoElement.style.padding = `0px`;
-
-    // 2nd get the url of the current tab
-    const url = window.location.href;
-
-    // now attaching it window
-    debugger;
-    const query = generatedquery(url);
-    console.log(query);
-    // Add autoplay to the URL query
-    const autoplayURL = query.includes("autoplay=1")
-      ? query
-      : query + (query.includes("?") ? "&" : "?") + "autoplay=1";
-
-    const iframe = document.createElement("iframe");
-    iframe.width = String(width);
-    iframe.height = String(height);
-    iframe.style.borderRadius = "10px";
-    iframe.id = "YTTabMaster";
-    iframe.src = autoplayURL;
-    iframe.allow =
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-
-    iframe.allowFullscreen = true;
-
-    videoElement.appendChild(iframe);
-  }
-}
-
-// Add a function to check clipboard for YouTube links and set search query if found
-const generatedquery = (link: string): string => {
-  const src = link.replace("youtube", "yout-ube").trim();
-  return src;
-};
-
-window.onload = function () {
-  console.log("Page is fully loaded!");
-  // Your animation or logic here
-  replaceplayer();
-  if (window.location.href.includes("youtube")) {
-    document.addEventListener("click", performeclickaction);
-  }
-};
-function performeclickaction() {
-  const iframe: HTMLElement | null = document.getElementById("YTTabMaster");
-  if (!iframe) {
-    replaceplayer();
-    // const kKeyEvent = new KeyboardEvent("keydown", {
-    //   key: "k",
-    //   code: "KeyK",
-    //   keyCode: 75, // Deprecated but still used in some cases
-    //   charCode: 0,
-    //   bubbles: true,
-    //   cancelable: true,
-    // });
-
-    // // Dispatch the event to the desired element or the whole document
-    // document.dispatchEvent(kKeyEvent);
-  } else {
-    document.removeEventListener("click", performeclickaction);
-  }
-}
-
+/**
+ * Highlights the current selected text and stores the info in chrome.storage
+ */
 async function highlightSelectedText(): Promise<void> {
   const selection = window.getSelection();
   if (!selection || selection.rangeCount === 0) return;
@@ -257,6 +188,7 @@ async function highlightSelectedText(): Promise<void> {
       text: highlightedText,
       xpath,
     };
+
     const updated = {
       ...stored,
       highlights: {
@@ -272,19 +204,27 @@ async function highlightSelectedText(): Promise<void> {
 }
 
 function getXPathForElement(el: Node): string {
-  const parts = [];
-  while (el && el.nodeType === Node.ELEMENT_NODE) {
-    const index =
-      Array.from(el.parentNode?.childNodes || [])
-        .filter((node) => node.nodeName === el.nodeName)
-        .indexOf(el) + 1;
+  const parts: string[] = [];
+
+  while (el && el.nodeType === Node.ELEMENT_NODE && el.parentNode) {
+    const parent = el.parentNode;
+    const children = Array.from(parent.childNodes).filter(
+      (node) => node.nodeName === el.nodeName
+    );
+
+    const index = children.indexOf(el as ChildNode) + 1;
     const tag = (el as HTMLElement).tagName;
+
     parts.unshift(`${tag}:nth-of-type(${index})`);
-    el = el.parentNode!;
+    el = parent;
   }
+
   return parts.join(" > ");
 }
 
+/**
+ * Restores all saved highlights for the current page
+ */
 async function restoreHighlights(): Promise<void> {
   const stored = await chrome.storage.local.get("highlights");
   const highlights = stored.highlights?.[location.href] || [];
@@ -317,6 +257,9 @@ async function restoreHighlights(): Promise<void> {
   });
 }
 
+/**
+ * Listeners for user actions on highlights
+ */
 document.addEventListener("mouseup", () => {
   if (isHighlightMode) {
     highlightSelectedText();
@@ -329,7 +272,7 @@ document.addEventListener("click", (e) => {
     const newText = prompt("Edit highlighted text:", target.innerText);
     if (newText !== null) {
       target.innerText = newText;
-      // Optionally: update chrome.storage with new text
+      // Optional: update storage here
     }
   }
 });
