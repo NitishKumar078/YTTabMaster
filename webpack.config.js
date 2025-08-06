@@ -11,6 +11,7 @@ const config = {
   },
   entry: {
     content: "./src/content_script/content.ts",
+    youtubescript: "./src/content_script/youtubescript.ts",
     background: "./src/Background/background.ts",
     react: "./src/react/index.tsx",
   },
