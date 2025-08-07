@@ -46,16 +46,16 @@ function initFloatingWidget(): void {
   });
 
   const actions: { icon: string; title: string; onClick: () => void }[] = [
-    {
-      icon: "↗",
-      title: "Open",
-      onClick: () => alert("Open action"),
-    },
-    {
-      icon: "✏️",
-      title: "Edit",
-      onClick: () => alert("Edit action"),
-    },
+    // {
+    //   icon: "↗",
+    //   title: "Open",
+    //   onClick: () => alert("Open action"),
+    // },
+    // {
+    //   icon: "✏️",
+    //   title: "Edit",
+    //   onClick: () => alert("Edit action"),
+    // },
     {
       icon: "🖌️",
       title: "Toggle Highlight Mode",
